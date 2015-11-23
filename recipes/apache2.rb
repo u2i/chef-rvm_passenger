@@ -37,7 +37,7 @@ ruby_block "Calculate node['rvm_passenger']['module_path']" do
     root_path = node['rvm_passenger']['root_path']
 
     node.set['rvm_passenger']['module_path'] =
-      "#{root_path}/ext/apache2/mod_passenger.so"
+      "#{root_path}/buildout/apache2/mod_passenger.so"
     Chef::Log.debug(%{Setting node['rvm_passenger']['module_path'] = } +
       %{"#{node['rvm_passenger']['module_path']}"})
   end

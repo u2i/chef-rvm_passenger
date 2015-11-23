@@ -57,7 +57,7 @@ rvm_shell "build passenger_nginx_module" do
 
   not_if        <<-CHECK
     #{nginx_install}/sbin/nginx -V 2>&1 | \
-      grep "`cat /tmp/passenger_root_path`/ext/nginx"
+      grep "`cat /tmp/passenger_root_path`/buildout/nginx"
   CHECK
 end
 
