@@ -50,8 +50,6 @@ ruby_block "Calculate node['rvm_passenger']['root_path']" do
   block do
     Chef::RVMPassenger::CalculateAttribute.new(node).for_root_path
   end
-
-  not_if  { node['rvm_passenger']['root_path'] }
 end
 
 # calculate the ruby_wrapper attribute if it isn't set. This is evaluated in
@@ -61,6 +59,4 @@ ruby_block "Calculate node['rvm_passenger']['ruby_wrapper']" do
   block do
     Chef::RVMPassenger::CalculateAttribute.new(node).for_ruby_wrapper
   end
-
-  not_if  { node['rvm_passenger']['ruby_wrapper'] }
 end

@@ -41,8 +41,6 @@ ruby_block "Calculate node['rvm_passenger']['module_path']" do
     Chef::Log.debug(%{Setting node['rvm_passenger']['module_path'] = } +
       %{"#{node['rvm_passenger']['module_path']}"})
   end
-
-  not_if  { node['rvm_passenger']['module_path'] }
 end
 
 Array(node['rvm_passenger']['apache2_pkgs']).each do |pkg|
