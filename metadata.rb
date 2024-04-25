@@ -5,7 +5,7 @@ license          "Apache 2.0"
 description      "Installs and configures Passenger under RVM with Apache or nginx"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 
-version          "0.9.3"
+version          "0.9.5"
 
 recipe "rvm_passenger",           "Installs Passenger gem with RVM"
 recipe "rvm_passenger::apache2",  "Enables Apache module configuration for passenger under RVM"
