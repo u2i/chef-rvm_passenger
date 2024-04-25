@@ -26,7 +26,7 @@ default['rvm_passenger']['version']      = nil
 # unless overriden
 default['rvm_passenger']['rvm_ruby']     = nil
 
-case platform
+case node["platform_version"]
 when "suse"
   node.set['rvm_passenger']['common_pkgs']  = %w{libcurl-devel}
   node.set['rvm_passenger']['apache2_pkgs'] =
