@@ -11,9 +11,9 @@ recipe "rvm_passenger",           "Installs Passenger gem with RVM"
 recipe "rvm_passenger::apache2",  "Enables Apache module configuration for passenger under RVM"
 recipe "rvm_passenger::nginx",    "Installs Passenger gem w/ RVM, and recompiles support into Nginx"
 
-depends "rvm", ">= 0.10.2"
+depends "rvm"
 depends "chef_nginx", "= 3.2.0"
-depends "apache2", ">= 1.1.8"
+depends "apache2", "= 5.0.0"
 
 supports "ubuntu"
 supports "debian"

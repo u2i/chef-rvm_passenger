@@ -1,3 +1,6 @@
+## 0.10.0
+- Explicit dependent cookbook versions
+
 ## 0.8.3 (unreleased)
 
 
