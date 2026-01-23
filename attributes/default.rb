@@ -41,5 +41,5 @@ when "centos","redhat","fedora","scientific","amazon"
 else
   node.default['rvm_passenger']['common_pkgs']  = %w{libcurl4-openssl-dev}
   node.default['rvm_passenger']['apache2_pkgs'] =
-    %w{apache2-threaded-dev libapr1-dev libaprutil1-dev}
+    %w{apache2-dev libapr1-dev libaprutil1-dev}
 end
