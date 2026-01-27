@@ -56,10 +56,12 @@ if platform?('ubuntu') && node['platform_version'].to_f >= 24.0
     ruby_string rvm_ruby
   end
 
-  # stringio >= 3.2.0 required by apps and compatible with Ruby 3.3
-  rvm_gem 'stringio' do
+  # Replace Ruby's built-in stringio default gem with a newer version
+  # Must use --default flag to override the bundled default gem
+  rvm_shell 'install_stringio_default_gem' do
     ruby_string rvm_ruby
-    version '~> 3.2'
+    code 'gem install stringio --default'
+    not_if "gem list stringio --default | grep -q 'stringio (3\\.[2-9]'"
   end
 else
   rvm_gem "passenger" do
