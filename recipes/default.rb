@@ -52,10 +52,14 @@ if platform?('ubuntu') && node['platform_version'].to_f >= 24.0
 
   # Update gems in RVM environment to handle default gem conflicts
   # (APT Passenger uses RVM Ruby but apps may require newer default gems)
-  %w[bundler stringio].each do |gem_name|
-    rvm_gem gem_name do
-      ruby_string rvm_ruby
-    end
+  rvm_gem 'bundler' do
+    ruby_string rvm_ruby
+  end
+
+  # stringio >= 3.2.0 required by apps and compatible with Ruby 3.3
+  rvm_gem 'stringio' do
+    ruby_string rvm_ruby
+    version '~> 3.2'
   end
 else
   rvm_gem "passenger" do
