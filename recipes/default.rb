@@ -49,6 +49,14 @@ if platform?('ubuntu') && node['platform_version'].to_f >= 24.0
   end
 
   package 'libapache2-mod-passenger'
+
+  # Update gems in RVM environment to handle default gem conflicts
+  # (APT Passenger uses RVM Ruby but apps may require newer default gems)
+  %w[bundler stringio].each do |gem_name|
+    rvm_gem gem_name do
+      ruby_string rvm_ruby
+    end
+  end
 else
   rvm_gem "passenger" do
     ruby_string rvm_ruby
