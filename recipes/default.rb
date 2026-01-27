@@ -60,7 +60,7 @@ if platform?('ubuntu') && node['platform_version'].to_f >= 24.0
   # Must use --default flag to override the bundled default gem
   rvm_shell 'install_stringio_default_gem' do
     ruby_string rvm_ruby
-    code 'gem install stringio --default'
+    code 'gem install stringio --default --no-document'
     not_if "gem list stringio --default | grep -q 'stringio (3\\.[2-9]'"
   end
 else
