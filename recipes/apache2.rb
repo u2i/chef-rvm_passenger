@@ -54,18 +54,6 @@ rvm_shell "passenger_apache2_module" do
   not_if        { ::File.exists? node['rvm_passenger']['module_path'] }
 end
 
-# Compile PassengerAgent if missing (required for Passenger 6.x)
-rvm_shell "passenger_compile_agent" do
-  ruby_string   rvm_ruby
-  code          %{passenger-config compile-agent --auto}
-
-  not_if do
-    root_path = node['rvm_passenger']['root_path']
-    ::File.exist?("#{root_path}/buildout/support-binaries/PassengerAgent")
-  end
-  notifies :restart, 'service[apache2]', :delayed
-end
-
 template "#{apache_dir}/mods-available/passenger.load" do
   source  'passenger.load.erb'
   owner   'root'
