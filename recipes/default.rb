@@ -38,9 +38,22 @@ end
 
 rvm_environment rvm_ruby
 
-rvm_gem "passenger" do
-  ruby_string rvm_ruby
-  version     passenger_version
+# Use APT-based Passenger for Ubuntu 24.04+ (pre-built binaries avoid compilation issues)
+# For older systems, continue using the gem-based install
+if platform?('ubuntu') && node['platform_version'].to_f >= 24.0
+  apt_repository 'phusion-passenger' do
+    uri 'https://oss-binaries.phusionpassenger.com/apt/passenger'
+    distribution 'noble'
+    components ['main']
+    key 'https://oss-binaries.phusionpassenger.com/auto-software-signing-gpg-key.txt'
+  end
+
+  package 'libapache2-mod-passenger'
+else
+  rvm_gem "passenger" do
+    ruby_string rvm_ruby
+    version     passenger_version
+  end
 end
 
 # calculate the root_path attribute if it isn't set. This is evaluated in the
