@@ -44,7 +44,7 @@ class Chef
               "there are any connection problem with the gem sources."
           end
 
-          node.set[:rvm_passenger][:version] = spec[0].version.to_s
+          node.normal[:rvm_passenger][:version] = spec[0].version.to_s
           Chef::Log.debug(%{Setting node['rvm_passenger']['version'] = } +
             %{"#{node['rvm_passenger']['version']}"})
         end
@@ -57,7 +57,7 @@ class Chef
           rvm_ruby = node['rvm']['default_ruby']
           rvm_ruby += "@passenger" unless rvm_ruby == "system"
 
-          node.set['rvm_passenger']['rvm_ruby'] = rvm_ruby
+          node.normal['rvm_passenger']['rvm_ruby'] = rvm_ruby
           Chef::Log.debug(%{Setting node['rvm_passenger']['rvm_ruby'] = } +
             %{"#{node['rvm_passenger']['rvm_ruby']}"})
         end

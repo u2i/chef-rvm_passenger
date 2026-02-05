@@ -31,27 +31,33 @@ include_recipe "apache2"
 rvm_ruby    = node['rvm_passenger']['rvm_ruby']
 apache_dir  = node['apache']['dir']
 
-# set the module_path attribute if it isn't set
-ruby_block "Calculate node['rvm_passenger']['module_path']" do
-  block do
-    root_path = node['rvm_passenger']['root_path']
+# APT-based Passenger for Ubuntu 24.04+ provides pre-built modules
+# Only compile from source for older systems
+apt_based_passenger = platform?('ubuntu') && node['platform_version'].to_f >= 24.0
 
-    node.set['rvm_passenger']['module_path'] =
-      "#{root_path}/buildout/apache2/mod_passenger.so"
-    Chef::Log.debug(%{Setting node['rvm_passenger']['module_path'] = } +
-      %{"#{node['rvm_passenger']['module_path']}"})
+unless apt_based_passenger
+  # set the module_path attribute if it isn't set
+  ruby_block "Calculate node['rvm_passenger']['module_path']" do
+    block do
+      root_path = node['rvm_passenger']['root_path']
+
+      node.normal['rvm_passenger']['module_path'] =
+        "#{root_path}/buildout/apache2/mod_passenger.so"
+      Chef::Log.debug(%{Setting node['rvm_passenger']['module_path'] = } +
+        %{"#{node['rvm_passenger']['module_path']}"})
+    end
   end
-end
 
-Array(node['rvm_passenger']['apache2_pkgs']).each do |pkg|
-  package pkg
-end
+  Array(node['rvm_passenger']['apache2_pkgs']).each do |pkg|
+    package pkg
+  end
 
-rvm_shell "passenger_apache2_module" do
-  ruby_string   rvm_ruby
-  code          %{passenger-install-apache2-module -a}
+  rvm_shell "passenger_apache2_module" do
+    ruby_string   rvm_ruby
+    code          %{passenger-install-apache2-module -a}
 
-  not_if        { ::File.exists? node['rvm_passenger']['module_path'] }
+    not_if        { ::File.exists? node['rvm_passenger']['module_path'] }
+  end
 end
 
 template "#{apache_dir}/mods-available/passenger.load" do
@@ -59,6 +65,8 @@ template "#{apache_dir}/mods-available/passenger.load" do
   owner   'root'
   group   'root'
   mode    '0755'
+  # APT-based install manages its own module loading
+  not_if { apt_based_passenger }
 end
 
 template "#{apache_dir}/mods-available/passenger.conf" do
@@ -66,8 +74,19 @@ template "#{apache_dir}/mods-available/passenger.conf" do
   owner   'root'
   group   'root'
   mode    '0755'
+  variables(
+    apt_based_passenger: apt_based_passenger
+  )
 end
 
-apache_module "passenger" do
-  module_path node['rvm_passenger']['module_path']
+if apt_based_passenger
+  # APT package already enables the module, just ensure it's active
+  execute 'enable_passenger_module' do
+    command 'a2enmod passenger'
+    not_if { ::File.exist?("#{apache_dir}/mods-enabled/passenger.load") }
+  end
+else
+  apache_module "passenger" do
+    module_path node['rvm_passenger']['module_path']
+  end
 end
